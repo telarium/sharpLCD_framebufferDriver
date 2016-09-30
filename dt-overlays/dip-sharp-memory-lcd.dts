@@ -1,0 +1,53 @@
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/pinctrl/sun4i-a10.h>
+
+/ {
+	compatible = "nextthing,chip", "allwinner,sun5i-r8";
+
+	/* Create our pinctrl nodes */
+	fragment@0 {
+		target = <&pio>;
+
+		__overlay__ {
+			chip_spi2_pins_a: spi2@0 {
+				allwinner,pins = "PE1", "PE2", "PE3";
+				allwinner,function = "spi2";
+				allwinner,drive = <SUN4I_PINCTRL_10_MA>;
+				allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
+    		};
+
+			chip_spi2_cs0_pins_a: spi2_cs0@0 {
+				allwinner,pins = "PE0";
+				allwinner,function = "spi2";
+				allwinner,drive = <SUN4I_PINCTRL_10_MA>;
+				allwinner,pull = <SUN4I_PINCTRL_NO_PULL>;
+		    };
+		};
+	};
+
+	/*
+	 * And enable our SPI device, with the SHARP Memory LCD device connected
+	 * to it
+	*/
+	fragment@1 {
+		target = <&spi2>;
+
+		__overlay__ {
+			pinctrl-names = "default";
+			pinctrl-0 = <&chip_spi2_pins_a>,
+	                   <&chip_spi2_cs0_pins_a>;
+			status = "okay";
+			sharp@0{
+				compatible = "sharp";
+				reg = <0>;
+				spi-cs-high = <1>;
+				spi-max-frequency = <2000000>;
+				buswidth = <8>;
+				debug = <1>;
+			};
+		};
+	};
+};
