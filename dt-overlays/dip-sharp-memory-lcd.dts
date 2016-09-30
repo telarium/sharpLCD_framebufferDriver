@@ -46,7 +46,7 @@
 				spi-cs-high = <1>;
 				spi-max-frequency = <2000000>;
 				buswidth = <8>;
-				debug = <1>;
+				debug = <0>;
 			};
 		};
 	};
